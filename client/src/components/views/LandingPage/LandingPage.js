@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import axios from 'axios';
 import { Icon, Col, Card, Row } from 'antd';
 import Meta from 'antd/lib/card/Meta';
+import ImageSlider from '../../utils/ImageSlider';
 function LandingPage() {
     const [Products, setProducts] = useState([]);
 
@@ -24,7 +25,7 @@ function LandingPage() {
         //Col은 24사이즈인데 lg는 가장 클때이고 파라미터값의미는 각각 6씩 가져간다. 그다음은 md(반정도 되었을때) xs는 작은사이즈
         return <Col lg={6} md={8} xs={24} key={index}>
             <Card
-                cover = {<img src={`http://localhost:5000/${product.images[0]}`} />}
+                cover={<ImageSlider images={product.images} />}
                 >
                 <Meta
                     title={product.title}
@@ -67,12 +68,6 @@ const LandingPageStyled = styled.div`
     .addBtn{
         display: flex;
         justify-content: center;
-    }
-    .ant-card-cover{
-        img{
-            width: 100%;
-            max-height: 150px;
-        }
     }
 `;
 export default LandingPage
