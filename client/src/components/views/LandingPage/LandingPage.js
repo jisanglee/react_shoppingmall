@@ -4,11 +4,20 @@ import axios from 'axios';
 import { Icon, Col, Card, Row } from 'antd';
 import Meta from 'antd/lib/card/Meta';
 import ImageSlider from '../../utils/ImageSlider';
+import CheckBox from './Sections/CheckBox';
+import RadioBox from './Sections/RadioBox';
+import { continents,price } from './Sections/Datas';
+
+
 function LandingPage() {
     const [Products, setProducts] = useState([]);
     const [Skip, setSkip] = useState(0);
     const [Limit, setLimit] = useState(8);
     const [PostSize, setPostSize] = useState(0);
+    const [Filters, setFilters] = useState({
+        continents: [],
+        price: []
+    })
     useEffect(() => {
         let body = {
             skip: Skip,
@@ -46,7 +55,7 @@ function LandingPage() {
         //Col은 24사이즈인데 lg는 가장 클때이고 파라미터값의미는 각각 6씩 가져간다. 그다음은 md(반정도 되었을때) xs는 작은사이즈
         return <Col lg={6} md={8} xs={24} key={index}>
             <Card
-                cover={<ImageSlider images={product.images} />}
+                cover={<ImageSlider images={product.images}/>}
                 >
                 <Meta
                     title={product.title}
@@ -55,15 +64,64 @@ function LandingPage() {
             </Card>
         </Col>
     })
-
     
+    const showFilteredResults = (filters) => {
+        let body = {
+            skip: 0,
+            limit: Limit,
+            filters: filters
+        }
+        getProducts(body)
+        setSkip(0)
+    }
+    const handlePrice = (value) => {
+        const data = price;
+        let array = [];
+        for (let key in data) {
+            if (data[key]._id === parseInt(value)) {
+                //parseInt는 혹시 string으로 들어올경우 안전하게 캐스팅하기위함.
+                array = data[key].array;
+            }
+        }
+        return array;
+    }
+    //filters에 _id  category는 continents 혹은 price
+    const handleFilters = (filters, category) => {
+        const newFilters = { ...Filters }
+        newFilters[category] = filters
+        console.log('filters : ',filters)
+
+        if (category === "price") {
+            let priceValues = handlePrice(filters)
+            newFilters[category] = priceValues
+        }
+        showFilteredResults(newFilters)
+        setFilters(newFilters)
+    }
+
     return (
         <LandingPageStyled>
             <div className="titleText">
                 <h2>Let's Travel Anywhere <Icon type="rocket" /></h2>
             </div>
-            {/* filter */}
-
+            {/* filter >> collapse와 checkbox와 radiobox로 구성 */}
+            <Row>
+                <Col lg={12} xs={24}>
+                    {/* CheckBox */}
+                    <CheckBox
+                        list={continents}
+                        handleFilters={filters => handleFilters(filters, "continents")}
+                    />
+                </Col>
+                <Col lg={12} xs={24}>
+                    {/* RadioBox */}
+                    <RadioBox
+                        list={price}
+                        handleFilters={filters => handleFilters(filters, "price")}
+                    
+                    />
+                </Col>
+            </Row>
             {/* search */}
 
             {/* cards gutter은 여백 */}

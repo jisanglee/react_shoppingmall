@@ -57,7 +57,7 @@ function FileUpload(props) {
                 {Images.map((image, index) => (
                     
                 <div key={index} onDoubleClick={()=>{deleteHandler(image)}}>
-                    <img src={`http://localhost:5000/${image}`} />
+                    <img src={`http://localhost:5000/${image}`} alt="uploadimg" />
                         </div>
                 ))}
             </div>

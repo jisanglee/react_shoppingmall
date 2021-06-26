@@ -29,7 +29,12 @@
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": "react-app",
+    "rules": {
+      "no-unused-vars": 1,
+      "no-console": 0,
+      "react/jsx-filename-extension": 0
+    }
   },
   "browserslist": {
     "production": [
