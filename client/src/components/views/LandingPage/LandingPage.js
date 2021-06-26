@@ -6,6 +6,7 @@ import Meta from 'antd/lib/card/Meta';
 import ImageSlider from '../../utils/ImageSlider';
 import CheckBox from './Sections/CheckBox';
 import RadioBox from './Sections/RadioBox';
+import SearchFeature from './Sections/SearchFeature';
 import { continents,price } from './Sections/Datas';
 
 
@@ -18,6 +19,7 @@ function LandingPage() {
         continents: [],
         price: []
     })
+    const [SearchTerm, setSearchTerm] = useState("")
     useEffect(() => {
         let body = {
             skip: Skip,
@@ -89,7 +91,7 @@ function LandingPage() {
     const handleFilters = (filters, category) => {
         const newFilters = { ...Filters }
         newFilters[category] = filters
-        console.log('filters : ',filters)
+        // console.log('filters : ',filters)
 
         if (category === "price") {
             let priceValues = handlePrice(filters)
@@ -98,7 +100,19 @@ function LandingPage() {
         showFilteredResults(newFilters)
         setFilters(newFilters)
     }
-
+    
+    //Search func
+    const updateSearchTerm = (newSearchTerm) => {
+        let body = {
+            skip: 0,
+            limit: Limit,
+            filter: Filters,
+            searchTerm:newSearchTerm
+        }
+        setSkip(0)
+        setSearchTerm(newSearchTerm)
+        getProducts(body)
+    }
     return (
         <LandingPageStyled>
             <div className="titleText">
@@ -122,7 +136,13 @@ function LandingPage() {
                     />
                 </Col>
             </Row>
+
             {/* search */}
+            <div className="searchBox">
+                <SearchFeature
+                    refreshFunction = {updateSearchTerm}
+                />
+            </div>
 
             {/* cards gutter은 여백 */}
             <Row gutter={[16,16]} >
@@ -151,6 +171,11 @@ const LandingPageStyled = styled.div`
     .addBtn{
         display: flex;
         justify-content: center;
+    }
+    .searchBox{
+        display: flex;
+        justify-content: flex-end;
+        margin: 1rem auto;
     }
 `;
 export default LandingPage

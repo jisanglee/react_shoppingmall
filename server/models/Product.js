@@ -36,6 +36,17 @@ const productSchema = mongoose.Schema({
     }
 },{timestamps:true})
 
+//search에서 무엇에 걸릴것인가 설정
+productSchema.index({
+    title: 'text',
+    description:'text'
+}, {
+    weights: {
+        //타이틀에 더 중점을 둠
+        title: 5,
+        description:1
+    }
+})
 const Product = mongoose.model('Product', productSchema);
 
 module.exports = { Product }
