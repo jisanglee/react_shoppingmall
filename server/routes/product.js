@@ -103,14 +103,21 @@ router.post('/products', (req, res) => {
 //각product 화면
 router.get('/products_by_id', (req, res) => {
   let type = req.query.type
-  let productId = req.query.id
-
-  //productId를 이용해서 데이터를 가져온다.
-  Product.find({ _id: productId })
+  //id가 하나일때
+  let productIds = req.query.id
+  //id가 하나가 아니라 여러개면 type=array id=1215125,12621612,1616122 이런식을 split해서 productIds = ['1215125','12621612','1616122']
+  if (type === "array") {
+    let ids = req.query.id.split(',')
+    productIds = ids.map(item => {
+      return item
+    })
+  }
+  //productIds를 이용해서 데이터를 가져온다.
+  Product.find({ _id: { $in: productIds } })
     .populate('writer')
     .exec((err, product) => {
       if (err) return res.status(400).send(err)
-      return res.status(200).send({success:true, product })
+      return res.status(200).json({success:true, product})
     })
 
 })
