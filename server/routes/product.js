@@ -97,7 +97,21 @@ router.post('/products', (req, res) => {
       
     })
   }
-
 })
 
+// axios.get(`/api/product/products_by_id?id=${productId}&type=single`)
+//각product 화면
+router.get('/products_by_id', (req, res) => {
+  let type = req.query.type
+  let productId = req.query.id
+
+  //productId를 이용해서 데이터를 가져온다.
+  Product.find({ _id: productId })
+    .populate('writer')
+    .exec((err, product) => {
+      if (err) return res.status(400).send(err)
+      return res.status(200).send({success:true, product })
+    })
+
+})
 module.exports = router;

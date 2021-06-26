@@ -57,7 +57,7 @@ function LandingPage() {
         //Col은 24사이즈인데 lg는 가장 클때이고 파라미터값의미는 각각 6씩 가져간다. 그다음은 md(반정도 되었을때) xs는 작은사이즈
         return <Col lg={6} md={8} xs={24} key={index}>
             <Card
-                cover={<ImageSlider images={product.images}/>}
+                cover={<a href={ `/product/${product._id}` }><ImageSlider images={product.images}/></a>}
                 >
                 <Meta
                     title={product.title}
