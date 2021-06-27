@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { getCartItems,removeCartItem } from '.././../../_actions/user_actions';
 import UserCardBlock from './Sections/UserCardBlock';
 import { Empty } from 'antd';
+import Paypal from '../../utils/Paypal';
 function CartPage(props) {
     const [Total, setTotal] = useState(0)
     const [ShowTotal, setShowTotal] = useState(false)
@@ -58,7 +59,8 @@ function CartPage(props) {
                         <Empty style={{ marginTop: "3rem" }} description={false} />
                         No Items In the Cart
                     </div>
-        }
+            }
+            <Paypal />
         </CartPageStyled>
     )
 }
