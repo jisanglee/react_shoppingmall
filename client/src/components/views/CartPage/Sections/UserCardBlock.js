@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-
+import "./UserCardBlock.css"
 function UserCardBlock(props) {
     
     const renderCartImage = (images) => {
@@ -49,19 +49,6 @@ function UserCardBlock(props) {
     )
 }
 const UserCardBlockStyled = styled.div`
-    table{
-        font-family: Arial, Helvetica, sans-serif,sans-serif;
-        border-collapse: collapse;
-        width: 100%;
-    }
-    td,th{
-        border: 1px solid #dddddd;
-        text-align: left;
-        padding: 8px;
-    }
-    tr:nth-child(even){
-        background-color: #dddddd;
-    }
     .productImage{
         width: 80;
         height: 60px;
