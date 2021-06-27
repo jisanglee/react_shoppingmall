@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components'
-import { getCartItems,removeCartItem } from '.././../../_actions/user_actions';
+import { getCartItems,removeCartItem,onSuccessBuy } from '.././../../_actions/user_actions';
 import UserCardBlock from './Sections/UserCardBlock';
-import { Empty } from 'antd';
+import { Empty,Result } from 'antd';
 import Paypal from '../../utils/Paypal';
 function CartPage(props) {
     const [Total, setTotal] = useState(0)
     const [ShowTotal, setShowTotal] = useState(false)
+    const [ShowSuccess, setShowSuccess] = useState(false)
     const dispatch = useDispatch();
     useEffect(() => {
         let cartItems = []
@@ -42,6 +43,22 @@ function CartPage(props) {
             }
         })
     }
+    
+    // 결제 후 할일 세가지 : 1.카트 비우기 2.payment collection (Detailed)에 데이터 저장 3.User Collection (Simple) 에 데이터 저장.
+    const transactionSuccess = (data) => {
+        dispatch(onSuccessBuy({
+            //paypal에서 전해준 정보 저장
+            paymentData: data,
+            //cartDetail 정보 저장
+            cartDetail:props.user.cartDetail
+        }))
+            .then(response => {
+                if (response.payload.success) {
+                    setShowTotal(false)
+                    setShowSuccess(true)
+            }
+        })
+    }
 
     return (
         <CartPageStyled>
@@ -50,17 +67,30 @@ function CartPage(props) {
                 {/* products={props.user.cartDetail.product} 만 넣어주면 에러발생. 해결책은 앞에 우선 props.user.cartDetail을 체킹하고 그러고나서 그다음인 product가 있는지 확인 >>>데이터 형식 변화를줌. product한층이 있는게 불편해서 없앰. */} 
                 <UserCardBlock products={props.user.cartDetail} removeItem={removeFromCart} />
             </div>
+
             {ShowTotal ?
             <div className="totalCount">
                 <h2>Total Amount : ${Total}</h2>
             </div>
             
-                : <div>
+            : ShowSuccess ?
+                    <Result
+                        status="success"
+                        title="Successfully Purchased Items!"
+                    />
+                :
+                    <div>
                         <Empty style={{ marginTop: "3rem" }} description={false} />
                         No Items In the Cart
                     </div>
             }
-            <Paypal />
+
+            {ShowTotal && 
+                <Paypal
+                total={Total}
+                onSuccess={transactionSuccess}
+                />
+            }
         </CartPageStyled>
     )
 }

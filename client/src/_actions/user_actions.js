@@ -6,7 +6,8 @@ import {
     LOGOUT_USER,
     ADD_TO_CART,
     GET_CART_ITEMS,
-    REMOVE_CART_ITEM
+    REMOVE_CART_ITEM,
+    ON_SUCCESS_BUY
 } from './types';
 import { USER_SERVER } from '../components/Config.js';
 
@@ -104,6 +105,17 @@ export function removeCartItem(productId) {
         
     return {
         type: REMOVE_CART_ITEM,
+        payload: request 
+    }
+}
+
+export function onSuccessBuy(data) {
+    //여러개 상품 정보 가져옴
+    const request = axios.post(`/api/users/successBuy`,data)
+        .then(response => response.data);
+        
+    return {
+        type: ON_SUCCESS_BUY,
         payload: request 
     }
 }

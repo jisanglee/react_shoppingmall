@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+
 //payment model
 const paymentSchema = mongoose.Schema({
     user: {

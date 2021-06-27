@@ -2,11 +2,15 @@ import React from 'react';
 import PaypalExpressBtn from 'react-paypal-express-checkout';
  
 export default class Paypal extends React.Component {
+    state = {successPayment:true}
     render() {
         const onSuccess = (payment) => {
             // Congratulation, it came here means everything's fine!
-            		console.log("The payment was succeeded!", payment);
-            		// You can bind the "payment" object's value to your state or props or whatever here, please see below for sample returned data
+            console.log("The payment was succeeded!", payment);
+            // You can bind the "payment" object's value to your state or props or whatever here, please see below for sample returned data
+            //부모 CartPage에 prop을 이용해서 결제 성공시 결제 정보 넘겨줌
+            this.props.onSuccess(payment)
+            this.setState({successPayment:false})
         }
  
         const onCancel = (data) => {
@@ -24,11 +28,11 @@ export default class Paypal extends React.Component {
  
         let env = 'sandbox'; // you can set here to 'production' for production
         let currency = 'USD'; // or you can set this value from your props or state
-        let total = 1; // same as above, this is the total amount (based on currency) to be paid by using Paypal express checkout
+        let total = this.props.total; // same as above, this is the total amount (based on currency) to be paid by using Paypal express checkout
         // Document on Paypal's currency code: https://developer.paypal.com/docs/classic/api/currency_codes/
  
         const client = {
-            sandbox:    'YOUR-SANDBOX-APP-ID',
+            sandbox:    'AXH4c42gAZpWXJeGbprPC6LtocJdOJ3NKBZLET4dAE0FjbHQqZVadYqTv4emdxEVd-kk0xl1L4JB6_NN',
             production: 'YOUR-PRODUCTION-APP-ID',
         }
         // In order to get production's app-ID, you will have to send your app to Paypal for approval first
@@ -36,24 +40,29 @@ export default class Paypal extends React.Component {
         //   => https://developer.paypal.com/docs/classic/lifecycle/sb_credentials/
         // For production app-ID:
         //   => https://developer.paypal.com/docs/classic/lifecycle/goingLive/
- 
+        // sb-hmldz6635855@personal.example.com
+        
         // NB. You can also have many Paypal express checkout buttons on page, just pass in the correct amount and they will work!
         return (
-            <PaypalExpressBtn
-                env={env}
-                client={client}
-                currency={currency}
-                total={total}
-                onError={onError}
-                onSuccess={onSuccess}
-                onCancel={onCancel}
-                style={{
-                    size: 'large',
-                    color: 'blue',
-                    shape: 'rect',
-                    label:'checkout'
-                }}
-            />
+            <div>
+                {this.state.successPayment && 
+                <PaypalExpressBtn
+                    env={env}
+                    client={client}
+                    currency={currency}
+                    total={total}
+                    onError={onError}
+                    onSuccess={onSuccess}
+                    onCancel={onCancel}
+                    style={{
+                        size: 'large',
+                        color: 'blue',
+                        shape: 'rect',
+                        label:'checkout'
+                    }}
+                />
+                }
+            </div>
         );
     }
 }
