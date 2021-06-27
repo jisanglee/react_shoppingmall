@@ -3,6 +3,7 @@ const router = express.Router();
 const { User } = require("../models/User");
 
 const { auth } = require("../middleware/auth");
+const { Product } = require('../models/Product');
 
 //=================================
 //             User
@@ -50,8 +51,7 @@ router.post("/login", (req, res) => {
             user.generateToken((err, user) => {
                 if (err) return res.status(400).send(err);
                 res.cookie("w_authExp", user.tokenExp);
-                res
-                    .cookie("w_auth", user.token)
+                res.cookie("w_auth", user.token)
                     .status(200)
                     .json({
                         loginSuccess: true, userId: user._id
@@ -117,4 +117,35 @@ router.post("/addToCart", auth, (req, res) => {
     )
 });
 
+//cart product delete
+router.get('/removeFromCart', auth, (req, res) => {
+    //먼저 cart안에 내가 지우려고 한 상품을 지워주기
+    User.findOneAndUpdate(
+        { _id: req.user._id },
+        {
+            $pull: {
+                "cart":{"id":req.query.id}
+            }
+        },
+        { new: true },
+        (err, userInfo) => {
+            let cart = userInfo.cart
+            //지우고 남은 아이디
+            let array = cart.map(item => {
+                return item.id
+            })
+            //product collection에서 현재 남아있는 상품들의 정보를 다시 가져오기(cartdetail) (product.js에서 했었음 Product.find({_id:})
+            Product.find({ _id: { $in: array } })
+                .populate('writer')
+                .exec((err, productInfo) => {
+                    return res.status(200).json({
+                        productInfo,
+                        cart
+                })
+            })
+        }
+    )
+
+
+})
 module.exports = router;

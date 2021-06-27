@@ -4,7 +4,8 @@ import {
     AUTH_USER,
     LOGOUT_USER,
     ADD_TO_CART,
-    GET_CART_ITEMS
+    GET_CART_ITEMS,
+    REMOVE_CART_ITEM
 } from '../_actions/types';
  
 
@@ -29,6 +30,15 @@ export default function(state={},action){
         case GET_CART_ITEMS:
             return { ...state, cartDetail: action.payload }
         //getCartItems의 리턴된 response.data가 cartDetail의 action.payload로 들어옴.
+        case REMOVE_CART_ITEM:
+            return {
+                ...state,
+                cartDetail: action.payload.productInfo,
+                userData: {
+                    ...state.userData,
+                    cart:action.payload.cart
+                
+            }}
         default:
             return state;
     }
